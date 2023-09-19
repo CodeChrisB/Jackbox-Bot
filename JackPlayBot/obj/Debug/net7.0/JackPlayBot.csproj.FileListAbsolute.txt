@@ -1,0 +1,12 @@
+D:\Git\JackPlayBot\JackPlayBot\bin\Debug\net7.0\JackPlayBot.deps.json
+D:\Git\JackPlayBot\JackPlayBot\bin\Debug\net7.0\JackPlayBot.dll
+D:\Git\JackPlayBot\JackPlayBot\bin\Debug\net7.0\JackPlayBot.pdb
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.csproj.AssemblyReference.cache
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.GeneratedMSBuildEditorConfig.editorconfig
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.AssemblyInfoInputs.cache
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.AssemblyInfo.cs
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.csproj.CoreCompileInputs.cache
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.dll
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\refint\JackPlayBot.dll
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\JackPlayBot.pdb
+D:\Git\JackPlayBot\JackPlayBot\obj\Debug\net7.0\ref\JackPlayBot.dll

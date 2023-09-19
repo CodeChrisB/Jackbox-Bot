@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "3H/w+n76fhENdeWMPLG7G/FiArU4jICuJabMhNX+D+gr3/HY9eWGXW/dQu25yDhDXE90n1/zwL71Ihb5VHSCBg==",
+  "success": true,
+  "projectFilePath": "D:\\Git\\JackPlayBot\\JackPlayBot\\JackPlayBot.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\cocop\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
