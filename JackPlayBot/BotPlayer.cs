@@ -6,6 +6,10 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Net.WebSockets;
 using System.Net.Http.Json;
+using JackPlayBot.Common.Register.ActionCtx.Model;
+using JackPlayBot.Common.Register.ActionCtx.Helper;
+using JackPlayBot.Common.Register;
+using JackPlayBot.Common.Data;
 
 namespace PlayerBots
 {
@@ -15,6 +19,7 @@ namespace PlayerBots
         private NetworkStream stream;
         private Intelligence intelligence;
         private Guid PlayerId;
+        private Games currentGame;
 
         public BotPlayer(Intelligence intelligence)
         {
@@ -22,33 +27,33 @@ namespace PlayerBots
             PlayerId = Guid.NewGuid();
         }
 
-        public async void PlayGame(string roomCode, string userName)
+        public async void PlayGame(string roomCode, string userName, Games game)
         {
+            currentGame = game;
+            roomCode = roomCode.ToUpper();
+            string roomId = "";
+            //get hostId
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://ecast.jackboxgames.com/api/v2/rooms/{roomCode}");
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-                string roomId = "";
-                //get hostId
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://ecast.jackboxgames.com/api/v2/rooms/{roomCode}");
-                request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string jsonContent = reader.ReadToEnd().ToString();
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    string jsonContent = reader.ReadToEnd().ToString();
+                // Parse the JSON content to get the specific value you need
+                dynamic jsonData = JsonConvert.DeserializeObject(jsonContent);
+                roomId = jsonData.body.host;
 
-                    // Parse the JSON content to get the specific value you need
-                    dynamic jsonData = JsonConvert.DeserializeObject(jsonContent);
-                    roomId = jsonData.body.host;
+                WebSocketClient client = new WebSocketClient();
+                client.OnDataReceived += OnDataReceived;
+                Uri uri = new Uri($"wss://{roomId}/api/v2/rooms/{roomCode}/play?role=player&name={userName}&format=json&user-id={PlayerId}");
+                CancellationTokenSource cts = new CancellationTokenSource();
 
-                    WebSocketClient client = new WebSocketClient();
-                    client.OnDataReceived += OnDataReceived;
-                    Uri uri = new Uri($"wss://{roomId}/api/v2/rooms/{roomCode}/play?role=player&name={userName}&format=json&user-id={PlayerId}");
-                    CancellationTokenSource cts = new CancellationTokenSource();
-
-                    await client.ConnectAsync(uri, cts.Token);
-                    Console.WriteLine("Connected to WebSocket.");
-                    await client.SendMessageAsync("Hello, server!", cts.Token);
-                }
+                await client.ConnectAsync(uri, cts.Token);
+                Console.WriteLine("Connected to WebSocket.");
+            }
 
 
 
@@ -56,8 +61,10 @@ namespace PlayerBots
 
         private void OnDataReceived(string obj)
         {
-            //dynamic jsonData = JsonConvert.DeserializeObject(obj);
-            Console.WriteLine(obj);
+            ActionContext context = ActionContextBuilder.Build(obj, intelligence);
+
+
+            ContextDistributer.CallFunction(context, currentGame);
         }
     }
 }

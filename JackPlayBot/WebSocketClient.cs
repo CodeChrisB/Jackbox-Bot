@@ -12,6 +12,8 @@ public class WebSocketClient
     public WebSocketClient()
     {
         webSocket = new ClientWebSocket();
+        int allowedBytes = 1024 * 1024 * 5;
+        webSocket.Options.SetBuffer(allowedBytes, allowedBytes); ; // 1MB (adjust as needed)
     }
 
     public async Task ConnectAsync(Uri uri, CancellationToken cancellationToken)
@@ -42,14 +44,28 @@ public class WebSocketClient
     {
         try
         {
-            byte[] buffer = new byte[1024];
+            const int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            MemoryStream messageBuffer = new MemoryStream();
+
             while (webSocket.State == WebSocketState.Open)
             {
                 WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                if (result.MessageType == WebSocketMessageType.Text)
+
+                if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    string message = System.Text.Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                    return;
+                }
+
+                messageBuffer.Write(buffer, 0, result.Count);
+
+                if (result.EndOfMessage)
+                {
+                    string message = System.Text.Encoding.UTF8.GetString(messageBuffer.ToArray());
                     OnDataReceived?.Invoke(message);
+                    messageBuffer.SetLength(0); 
+
                 }
             }
         }

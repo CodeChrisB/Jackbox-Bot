@@ -1,18 +1,21 @@
-﻿using PlayerBots;
+﻿using JackPlayBot;
+using PlayerBots;
 using PlayerBots.Common.Data;
 
 namespace BotStarter
 {
-    internal class Program
+    public class Program
     {
         static async Task Main(string[] args)
         {
+
+
+            PlayBotSetup.SetUp();
             Console.Write("Room Code: ");
             string roomCode = Console.ReadLine();
 
-            for (int i = 0; i < 8; i++)
                 new BotPlayer(Intelligence.BadPlayer)
-                    .PlayGame(roomCode, "Bot");
+                    .PlayGame(roomCode, "Bot",JackPlayBot.Common.Data.Games.Guesspionage);
 
 
 
