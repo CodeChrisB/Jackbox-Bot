@@ -8,16 +8,17 @@ namespace BotStarter
     {
         static async Task Main(string[] args)
         {
-
-
+            BotPlayer botPlayer = new BotPlayer(Intelligence.BadPlayer);
             PlayBotSetup.SetUp();
-            Console.Write("Room Code: ");
-            string roomCode = Console.ReadLine();
+            bool result;
 
-                new BotPlayer(Intelligence.BadPlayer)
-                    .PlayGame(roomCode, "Bot",JackPlayBot.Common.Data.Games.Guesspionage);
+            do
+            {
+                Console.Write("Room Code: ");
+                string roomCode = Console.ReadLine();
+                result = await botPlayer.PlayGame(roomCode, "Bot",JackPlayBot.Common.Data.Games.Guesspionage);
 
-
+            } while (!result);
 
             await Task.Delay(-1);
         }
